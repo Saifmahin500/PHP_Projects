@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>ID Card Information Form</title>
@@ -12,23 +13,27 @@
       align-items: center;
       height: 100vh;
     }
+
     form {
       background: white;
       padding: 25px 30px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
       width: 350px;
     }
+
     h2 {
       text-align: center;
       margin-bottom: 20px;
       color: #333;
     }
+
     label {
       display: block;
       margin: 10px 0 5px;
       font-weight: bold;
     }
+
     input[type="text"],
     input[type="email"],
     input[type="tel"] {
@@ -37,6 +42,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+
     input[type="submit"] {
       background-color: #007BFF;
       color: white;
@@ -48,14 +54,16 @@
       margin-top: 15px;
       font-size: 16px;
     }
+
     input[type="submit"]:hover {
       background-color: #0056b3;
     }
   </style>
 </head>
+
 <body>
 
-  <form action="id.php" method="post">
+  <form action="id.php" method="post" enctype="multipart/form-data">
     <h2>ID Card Info</h2>
 
     <label for="name">Name:</label>
@@ -73,8 +81,12 @@
     <label for="batch">Batch No:</label>
     <input type="text" id="batch" name="batch" required>
 
+    <label for="course">Upload Image:</label>
+    <input type="file" id="img" name="upload_image" required>
+
     <input type="submit" value="Generate ID" name="btn">
   </form>
 
 </body>
+
 </html>

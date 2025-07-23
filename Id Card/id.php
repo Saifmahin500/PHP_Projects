@@ -5,6 +5,9 @@ if (isset($_POST["btn"])) {
     $phone = $_POST["phone"];
     $course = $_POST["course"];
     $batch = $_POST["batch"];
+    $image = $_FILES["upload_image"]["name"];
+    $tmp_name = $_FILES["upload_image"]["tmp_name"];
+    move_uploaded_file($tmp_name, "img_file/" . $image);
 }
 
 
@@ -65,22 +68,25 @@ if (isset($_POST["btn"])) {
 
 <body>
     <div class="id-card" id="idCard">
-        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile Photo">
+        <img src="img_file/<?php if (isset($image)) {
+                                echo $image;
+                            } ?>" alt="Profile Photo">
+
         <h3 id="cardName"><?php if (isset($name)) {
                                 echo $name;
                             }  ?></h3>
         <p id="cardEmail">Email:<?php if (isset($email)) {
-                                echo $email;
-                            }  ?></p>
+                                    echo $email;
+                                }  ?></p>
         <p id="cardPhone">Phone:<?php if (isset($phone)) {
-                                echo $phone;
-                            }  ?></p>
+                                    echo $phone;
+                                }  ?></p>
         <p id="cardCourse">Course Name :<?php if (isset($course)) {
-                                echo $course;
-                            }  ?></p>
+                                            echo $course;
+                                        }  ?></p>
         <span class="badge" id="cardBatch">Batch No : <?php if (isset($batch)) {
-                                echo $batch;
-                            }  ?></span>
+                                                            echo $batch;
+                                                        }  ?></span>
     </div>
 
 
