@@ -107,7 +107,7 @@ if (isset($_GET['city'])) {
       <div class="description"><?= $weather['description'] ?></div>
       <hr>
       <div class="row">
-        <div class="col-4"><strong>Humidity--</strong><br><?= $weather['humidity'] ?>%</div>
+        <div class="col-4"><strong>Humidity</strong><br><?= $weather['humidity'] ?>%</div>
         <div class="col-4"><strong>Wind</strong><br><?= $weather['wind'] ?> km/h</div>
         <div class="col-4"><strong>Pressure</strong><br><?= $weather['pressure'] ?> hPa</div>
       </div>
