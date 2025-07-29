@@ -92,7 +92,7 @@ if (isset($_GET['city'])) {
   </style>
 </head>
 <body>
-    <h1 class="heading"><b>Good weather and Good vibes</b></h1>
+    <h1 class="heading"><b>Good weather and Good vibes </b></h1>
 
   <form class="search-form d-flex gap-2" method="get">
     <input type="text" name="city" class="form-control" placeholder="Enter city name..." required>
@@ -107,7 +107,7 @@ if (isset($_GET['city'])) {
       <div class="description"><?= $weather['description'] ?></div>
       <hr>
       <div class="row">
-        <div class="col-4"><strong>Humidity</strong><br><?= $weather['humidity'] ?>%</div>
+        <div class="col-4"><strong>Humidity--</strong><br><?= $weather['humidity'] ?>%</div>
         <div class="col-4"><strong>Wind</strong><br><?= $weather['wind'] ?> km/h</div>
         <div class="col-4"><strong>Pressure</strong><br><?= $weather['pressure'] ?> hPa</div>
       </div>
