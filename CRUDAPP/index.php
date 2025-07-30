@@ -1,6 +1,26 @@
+<?php
+
+include("function.php");
+
+$objCrudAdmin = new CrudApp();
+
+if (isset($_POST["add_info"])) {
+    $return_msg = $objCrudAdmin->add_data($_POST);
+    header("Location: index.php");
+    exit();
+}
+
+
+$students = $objCrudAdmin->display_data();
+
+
+?>
+
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,15 +29,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
     <title>CRUDAPP</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <div class="container my-4 p-4 shadow">
         <h3><a href="index.php">Saif IT Students Database</a></h3>
         <form class="form" action="" method="post" enctype="multipart/form-data">
-            <input class="form-control mb-2" type="text"name="std_name" placeholder="Enter Your Name">
-            <input class="form-control mb-2" type="text"name="std_roll" placeholder="Enter Your Roll">
+            <?php if (isset($return_msg)) {
+                echo $return_msg;
+            } ?>
+            <input class="form-control mb-2" type="text" name="std_name" placeholder="Enter Your Name">
+            <input class="form-control mb-2" type="text" name="std_roll" placeholder="Enter Your Roll">
             <label for="image">Upload Your Image</label>
-            <input class="form-control mb-2" type="file"name="std_img">
+            <input class="form-control mb-2" type="file" name="std_img">
 
             <input class="form-control bg-warning" type="submit" value="Add Information" name="add_info">
 
@@ -27,31 +51,34 @@
     </div>
 
     <div class="container my-4 p-4 shadow">
-       <table class="table table-responsive">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>NAME</th>
-                <th>Roll</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>SAIF</td>
-                <td>102039</td>
-                <td></td>
-                <td>
-                    <a class="btn btn-success" href="#">Edit</a>
-                    <a class="btn btn-warning" href="#">Delete</a>
-                </td>
-            </tr>
-        </tbody>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>Roll</th>
+                    <th>Image</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = mysqli_fetch_assoc($students)) {  ?>
+                    <tr>
+                        <td><?php echo $row['id']; ?></td>
+                        <td><?php echo $row['std_name']; ?></td>
+                        <td><?php echo $row['std_roll']; ?></td>
+                        <td><img src="upload/<?php echo $row['std_img']; ?>" width="50"></td>
+                        <td>
+                            <a class="btn btn-success" href="#">Edit</a>
+                            <a class="btn btn-warning" href="#">Delete</a>
+                        </td>
+                    </tr>
+                <?php } ?>
 
-       </table>
-        
+            </tbody>
+
+        </table>
+
 
     </div>
 
@@ -67,5 +94,6 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
     -->
-  </body>
+</body>
+
 </html>
