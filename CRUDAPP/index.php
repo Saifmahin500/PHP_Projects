@@ -4,6 +4,8 @@ include("function.php");
 
 $objCrudAdmin = new CrudApp();
 
+
+
 if (isset($_POST["add_info"])) {
     $return_msg = $objCrudAdmin->add_data($_POST);
     header("Location: index.php");
@@ -12,6 +14,17 @@ if (isset($_POST["add_info"])) {
 
 
 $students = $objCrudAdmin->display_data();
+
+if (isset($_GET["status"])) {
+    if ($_GET["status"] == "delete") {
+        $delete_id = $_GET["id"];
+        $dlt_msg = $objCrudAdmin->delete_data($delete_id);
+        header("Location: index.php?deleted=1"); // 
+        exit();
+    }
+}
+
+
 
 
 ?>
@@ -34,6 +47,9 @@ $students = $objCrudAdmin->display_data();
 <body>
     <div class="container my-4 p-4 shadow">
         <h3><a href="index.php">Saif IT Students Database</a></h3>
+        <?php if (isset($dlt_msg)) {
+            echo $dlt_msg;
+        }  ?>
         <form class="form" action="" method="post" enctype="multipart/form-data">
             <?php if (isset($return_msg)) {
                 echo $return_msg;
@@ -69,8 +85,8 @@ $students = $objCrudAdmin->display_data();
                         <td><?php echo $row['std_roll']; ?></td>
                         <td><img src="upload/<?php echo $row['std_img']; ?>" width="50"></td>
                         <td>
-                            <a class="btn btn-success" href="#">Edit</a>
-                            <a class="btn btn-warning" href="#">Delete</a>
+                            <a class="btn btn-success" href="edit.php?status=edit&&id=<?php echo $row['id']; ?>">Edit</a>
+                            <a class="btn btn-warning" href="?status=delete&&id=<?php echo $row['id']; ?>">Delete</a>
                         </td>
                     </tr>
                 <?php } ?>
