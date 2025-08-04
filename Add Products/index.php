@@ -11,8 +11,11 @@ if (isset($_POST["add_btn_product"])) {
     header("Location: index.php");
     exit();
 }
-?>
 
+$display_products = $objShopAdmin->display_data();
+
+
+?>
 <!doctype html>
 <html lang="en">
 
@@ -88,28 +91,32 @@ if (isset($_POST["add_btn_product"])) {
                     <th>PRODUCT NAME</th>
                     <th>PRODUCT IMAGE</th>
                     <th>STOCK</th>
-                    <th>PRICE</th>
+                    <th>PRICE </th>
                     <th>Category</th>
                     <th>Category ID</th>
-                    <th>ADD DATE</th>
+                    <th>ADDED DATE</th>
                     <th>ACTION</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>01</td>
-                    <td>T-shirt</td>
-                    <td></td>
-                    <td>05</td>
-                    <td>500</td>
-                    <td>Men Cloths</td>
-                    <td>1001</td>
-                    <td>01/20/22</td>
-                    <td>
-                        <a class="btn btn-success" href="#">Edit</a>
-                        <a class="btn btn-warning" href="#">Delete</a>
-                    </td>
-                </tr>
+                <?php while ($product_items = mysqli_fetch_assoc($display_products)) {
+
+                ?>
+                    <tr>
+                        <td><?php echo $product_items['id']; ?></td>
+                        <td><?php echo $product_items['product_name']; ?></td>
+                        <td><img src="upload/<?php echo $product_items['product_image']; ?>" alt="" width="100px"></td>
+                        <td><?php echo $product_items['product_stock']; ?></td>
+                        <td><strong>$</strong><?php echo $product_items['product_price']; ?></td>
+                        <td><?php echo $product_items['category']; ?></td>
+                        <td><?php echo $product_items['category_id']; ?></td>
+                        <td><?php echo $product_items['created_at']; ?></td>
+                        <td>
+                            <a class="btn btn-success" href="edit.php?status=edit&&id=<?php echo $product_items['id']; ?>">Edit</a>
+                            <a class="btn btn-warning" href="#">Delete</a>
+                        </td>
+                    </tr>
+                <?php   }  ?>
             </tbody>
         </table>
     </div>
