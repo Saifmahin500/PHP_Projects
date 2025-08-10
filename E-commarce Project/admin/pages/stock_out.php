@@ -1,4 +1,5 @@
 <?php
+
 error_reporting(0);
 require_once 'dbConfig.php';
 //Fetch Products
@@ -13,16 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     //Update product stock
 
-    $update = $DB_con->prepare("UPDATE products SET stock_amount = stock_amount + ? WHERE id = ? ");
+    $update = $DB_con->prepare("UPDATE products SET stock_amount = stock_amount - ? WHERE id = ? ");
     $update->execute([$quantity, $product_id]);
 
     //Insert into inventory
 
-    $log = $DB_con->prepare("INSERT INTO inventory (product_id, change_type, quantity, remarks) VALUES (?,'in',?,?)");
+    $log = $DB_con->prepare("INSERT INTO inventory (product_id, change_type, quantity, remarks) VALUES (?,'out',?,?)");
 
     $log->execute([$product_id, $quantity, $remarks]);
 
-    echo "<div class='alert alert-success'>Stock Added Successfully</div>";
+    echo "<div class='alert alert-success'>Stock Reduced Successfully</div>";
 
     header('location: ?page=products');
     exit;
@@ -33,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <html>
 
 <head>
-    <title>Stock In</title>
+    <title>Stock Out</title>
 </head>
 
 <body>
@@ -59,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <input type="text" name="remarks" class="form-control">
         </div>
 
-        <button type="submit" class="btn btn-primary">Add Stock</button>
+        <button type="submit" class="btn btn-primary">Reduced</button>
     </form>
 
 </body>
