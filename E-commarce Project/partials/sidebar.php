@@ -4,7 +4,7 @@ $catStmt = $DB_con->query("SELECT id, category_name FROM categories ORDER BY cat
 $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<aside class="left-sidebar p-3">
+<aside class="left-sidebar p-5">
 	<div class="sticky-sidebar">
 		<h5 class="mb-3">Filter by Category</h5>
 		<div id="catBox">
