@@ -40,6 +40,7 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
   .navbar-nav .nav-link {
     position: relative;
     transition: color 0.3s ease;
+    color: black;
 
   }
 
@@ -64,8 +65,8 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
 
   /* Active Link Highlight */
   .navbar-nav .active>.nav-link {
-    color: #070111ff !important;
-    font-weight: 600;
+    color: #7B34E2 !important;
+    font-weight: 500;
   }
 
   .navbar-brand i,
@@ -78,8 +79,8 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
 
 <nav class="navbar navbar-expand-lg shadow-sm fw-bold fixed-top" style="background-color: #E6E6FA;">
   <div class="container">
-    <a class="navbar-brand fw-bold text-uppercase " style="color: #7D3EE4;" href="<?= $BASE ?>">
-      <i class="fa-solid fa-shop me-2"></i> My Store
+    <a class="navbar-brand fw-bold text-uppercase " style="color: #05010cff;" href="<?= $BASE ?>">
+      <i class="fa-solid fa-shop me-2"></i> PotherHaat
     </a>
     <button
       class="navbar-toggler"
@@ -97,22 +98,22 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
       <ul class="navbar-nav me-auto">
         <li class="nav-item active">
           <a class="nav-link" style="color: #7D3EE4;" href="<?= $BASE ?>">
-            <i class="fa-solid fa-house"></i> Home
+            Home
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " style="color: #7D3EE4;" href="<?= $BASE ?>/index.php?view=all">
-            <i class="fa-solid fa-th-large"></i> All Products
+          <a class="nav-link "  href="<?= $BASE ?>/index.php?view=all">
+             All Products
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " style="color: #7D3EE4;" href="index.php?view=all">
-            <i class="fa-solid fa-info-circle"></i> About Us
+          <a class="nav-link "  href="index.php?view=all">
+            About Us
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " style="color: #7D3EE4;" href="index.php?view=all">
-            <i class="fa-solid fa-envelope"></i> Contact Us
+          <a class="nav-link "  href="index.php?view=all">
+             Contact Us
           </a>
         </li>
       </ul>
@@ -144,12 +145,12 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
 
         <!-- login & registration -->
         <li class="nav-item">
-          <button class="nav-link btn btn-outline-light mr-2" style="color: #7D3EE4;" data-bs-toggle="modal" data-bs-target="">
+          <button class="nav-link btn btn-outline-light mr-2"  data-bs-toggle="modal" data-bs-target="">
             <i class="fa-solid fa-right-to-bracket"></i> Login
           </button>
         </li>
         <li class="nav-item">
-          <button class="nav-link btn btn-outline-warning mr-2" style="color: #7D3EE4;" data-bs-toggle="modal" data-bs-target="">
+          <button class="nav-link btn btn-outline-warning mr-2" data-bs-toggle="modal" data-bs-target="">
             <i class="fa-solid fa-right-to-bracket"></i> Register
           </button>
         </li>

@@ -19,7 +19,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 function productThumb($row)
 {
-	$fsBase = __DIR__ . "/admin/uploads/";
+	$fsBase = __DIR__ ."/admin/uploads/";
 	$urlBase = "admin/uploads/";
 
 	if (!empty($row['product_image']) && file_exists($fsBase . $row['product_image'])) {

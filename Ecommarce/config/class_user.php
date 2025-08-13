@@ -32,7 +32,7 @@ class USER
 
     public  function redirect($url)
     {
-        header("Location: .$url");
+        header("Location:" . $url);
         exit;
     }
 
@@ -75,7 +75,7 @@ class USER
         //send verification mail
         $verifyLink = $this->baseUrl . "/auth/verify.php?token=" . urlencode($token) . "&email=" . urlencode($email);
 
-        $this->sendMail($email, "Verify Your Email", "Click the link to verify:{$verifyLink}");
+        $this->sendMail($email, "Verify Your Email", "Click the link to verify:\n{$verifyLink}");
 
         return true;
     }
@@ -111,14 +111,14 @@ class USER
     {
         $st = $this->db->prepare("SELECT id, token, verified FROM users WHERE email = ? LIMIT 1");
         $st->execute([$email]);
-        $u = $st->fetch(PDO: FETCH_ASSOC);
+        $u = $st->fetch(PDO::FETCH_ASSOC);
 
         if (!$u) {
             throw new Exception("Account Not Found!");
         }
 
-        if ((int)$u['verified === 1']) {
-            return true; //already verified
+        if ((int)$u['verified'] === 1) {
+            return true; // already verified
         }
 
         if (!hash_equals($u['token'] ?? '', $token ?? '')) {
@@ -127,6 +127,108 @@ class USER
 
         $up = $this->db->prepare("UPDATE users SET verified = 1, token = NULL WHERE id = ?");
         $up->execute([$u['id']]);
+
+        return true;
+    }
+
+    public  function requestPasswordReset($email)
+    {
+        $st = $this->db->prepare("SELECT id, username FROM users WHERE email = ? LIMIT 1");
+        $st->execute([$email]);
+        $u = $st->fetch(PDO::FETCH_ASSOC);
+
+        if (!$u) return true;
+
+        $token = bin2hex(random_bytes(16));
+        $expire = (new DateTime('+1 hour'))->format('Y-m-d H:i:s');
+
+        $up = $this->db->prepare("UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?");
+
+        $up->execute([$token, $expire, $u['id']]);
+
+        $resetLink = $this->baseUrl . "/auth/resetpass.php?token=" . urlencode($token) . "&email=" . urlencode($email);
+
+        $message = '
+
+					<div style="font-family: Arial; font-size: 14px; line-height: 1.6; color: #333;">
+						<h2 style="margin: 0 0 12px;">Password Reset</h2>
+						<p>Hi ' . htmlspecialchars($u['username']) . ',</p>
+						<p>You requested to reset your password. Click the following button to set a new password.</p>
+
+						<p style="margin: 16px 0;">
+							<a href="' . htmlspecialchars($resetLink) . '" target="_blank" style="background: #007bff; color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 6px; display: inline-block;">Reset My Password
+							</a>
+						</p>
+
+						<p>If the button does not work, copy the following link and paste into your browser:</p>
+						<p>
+							<a href="' . htmlspecialchars($resetLink) . '" target="_blank">' . htmlspecialchars($resetLink) . '</a>
+						</p>
+
+						<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+						<p style="font-size: 12px; color: #777;">If you did not request a password reset, you can ignore this email.</p>
+					</div>
+				';
+
+        $this->sendMail($email, "Reset Your Passwordd", $message);
+
+
+        return true;
+    }
+
+    public function resetPassword($email, $token, $newPassword)
+    {
+        $st = $this->db->prepare("SELECT id, reset_token, reset_expires FROM users WHERE email = ? LIMIT 1");
+        $st->execute([$email]);
+        $u = $st->fetch(PDO::FETCH_ASSOC);
+
+        if (!$u) throw new Exception("Account Not Found.");
+
+        if (empty($u['reset_token']) || !hash_equals($u['reset_token'], $token ?? '')) {
+            throw new Exception('Invalid or Expired Token!');
+        }
+
+        if (!empty($u['reset_expires'])) {
+            $now = new DateTime();
+            $exp = new DateTime($u['reset_expires']);
+
+            if ($now > $exp) {
+                throw new Exception('Reset token expires. Try again');
+            }
+        }
+
+        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $up = $this->db->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ? ");
+        $up->execute([$hash, $u['id']]);
+        return true;
+    }
+
+    public function sendMail($email, $message, $subject)
+    {
+        require_once __DIR__ . '/mailer/PHPMailer.php';
+        require_once __DIR__ . '/mailer/SMTP.php';
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+        //$mail->SMTPDebug = 3;
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'saifpwad@gmail.com';
+        $mail->Password = '';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        $mail->setFrom('saifpwad@gmail.com', 'Cogent');
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+        $mail->AltBody = strip_tags($message);
+
+        if (!$mail->send()) {
+            $_SESSION['mailError'] = $mail->ErrorInfo ?? 'Mail send error';
+            return false;
+        }
 
         return true;
     }
