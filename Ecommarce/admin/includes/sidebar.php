@@ -1,4 +1,3 @@
-
 <div class="sidebar">
 	<h4><i class="fas fa-user-cog"></i> Admin Panel</h4>
 
@@ -36,6 +35,8 @@
 			<i class="fas fa-chart-bar"></i> Report
 		</a>
 	</div>
+
+	<a href="index.php?page=admin_profile"><i class="fas fa-tags"></i>Change Profile</a>
 
 	<a href="logout.php">
 		<i class="fas fa-sign-out-alt"></i> Logout

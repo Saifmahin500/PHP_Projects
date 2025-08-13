@@ -213,12 +213,12 @@ class USER
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'saifpwad@gmail.com';
-        $mail->Password = '';
+        $mail->Username = 'saifmahin500@gmail.com';
+        $mail->Password = 'swpcsovljnoegmvq';
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
-        $mail->setFrom('saifpwad@gmail.com', 'Cogent');
+        $mail->setFrom('saifmahin500@gmail.com', 'PotherHaat');
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = $subject;

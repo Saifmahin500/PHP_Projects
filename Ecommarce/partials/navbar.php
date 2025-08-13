@@ -102,18 +102,18 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link "  href="<?= $BASE ?>/index.php?view=all">
-             All Products
+          <a class="nav-link " href="<?= $BASE ?>/index.php?view=all">
+            All Products
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link "  href="index.php?view=all">
+          <a class="nav-link " href="index.php?view=all">
             About Us
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link "  href="index.php?view=all">
-             Contact Us
+          <a class="nav-link " href="index.php?view=all">
+            Contact Us
           </a>
         </li>
       </ul>
@@ -142,19 +142,37 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
             </span>
           </a>
         </li>
-
-        <!-- login & registration -->
-        <li class="nav-item">
-          <button class="nav-link btn btn-outline-light mr-2"  data-bs-toggle="modal" data-bs-target="">
-            <i class="fa-solid fa-right-to-bracket"></i> Login
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link btn btn-outline-warning mr-2" data-bs-toggle="modal" data-bs-target="">
-            <i class="fa-solid fa-right-to-bracket"></i> Register
-          </button>
-        </li>
       </ul>
+
+      <!-- login & registration -->
+
+      <ul class="navbar-nav">
+        <?php if ($isLoggedIn): ?>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="accMenu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accMenu">
+              <a class="dropdown-item" href="#">My Profile</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="<?= $BASE ?>/auth/logout.php">Logout</a>
+            </div>
+          </li>
+        <?php else: ?>
+          <li class="nav-item">
+            <button class="nav-link btn btn-outline-light mr-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+              <i class="fa-solid fa-right-to-bracket"></i> Login
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link btn btn-outline-warning mr-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+              <i class="fa-solid fa-right-to-bracket"></i> Register
+            </button>
+          </li>
+        <?php endif; ?>
+      </ul>
+
+
     </div>
   </div>
 </nav>
