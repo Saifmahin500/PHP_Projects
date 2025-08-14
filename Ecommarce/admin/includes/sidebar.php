@@ -35,9 +35,6 @@
 			<i class="fas fa-chart-bar"></i> Report
 		</a>
 	</div>
-
-	<a href="index.php?page=admin_profile"><i class="fas fa-tags"></i>Change Profile</a>
-
 	<a href="logout.php">
 		<i class="fas fa-sign-out-alt"></i> Logout
 	</a>
