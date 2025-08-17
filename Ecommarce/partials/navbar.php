@@ -149,13 +149,19 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
       <ul class="navbar-nav">
         <?php if ($isLoggedIn): ?>
           <li class="nav-item dropdown">
+            <!-- User icon এবং username -->
             <a class="nav-link dropdown-toggle" href="#" id="accMenu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
+              <i class="fas fa-user-circle fs-5"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'User') ?>
             </a>
+
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accMenu">
-              <a class="dropdown-item" href="#">My Profile</a>
+              <a class="dropdown-item" href="<?= $BASE ?>/auth/profile.php">
+                <i class="fas fa-id-badge"></i> My Profile
+              </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="<?= $BASE ?>/auth/logout.php">Logout</a>
+              <a class="dropdown-item" href="<?= $BASE ?>/auth/logout.php">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
             </div>
           </li>
         <?php else: ?>
@@ -165,14 +171,81 @@ $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link btn btn-outline-warning mr-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <button class="nav-link btn btn-outline-warning mr-2" data-bs-toggle="modal" data-bs-target="#registerModal">
               <i class="fa-solid fa-right-to-bracket"></i> Register
             </button>
           </li>
         <?php endif; ?>
       </ul>
-
-
     </div>
   </div>
 </nav>
+<?php if (!$isLoggedIn): ?>
+  <!--Login Modal-->
+  <div class="modal fade" id="loginModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content" method="post" action="<?= $BASE ?>/auth/login.php">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginTitle">Login to your account</h5>
+          <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="email" class="form-control" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <input type="password" name="password" class="form-control" required autocomplete="current-password">
+          </div>
+          <small>
+            <a href="<?= $BASE ?>/auth/fpass.php">Forgot Password?</a>
+          </small>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-dark">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div class="modal fade" id="registerModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content" method="post" action="<?= $BASE ?>/auth/register.php">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registerTitle">Create an Account</h5>
+          <button type="button" class="close" data-bs-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Username:</label>
+            <input type="text" name="username" class="form-control" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="email" class=" form-control" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required autocomplete="new-password" minlength="6">
+          </div>
+
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <input type="password" name="cpassword" class="form-control" required autocomplete="new-password" minlength="6">
+            <small class="text-muted">By creating an account, you agree to our terms.</small>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Register</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+<?php endif; ?>

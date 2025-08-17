@@ -7,15 +7,15 @@ require_once __DIR__ . '/dbconfig.php';
 
 class USER
 {
-    protected $db;
+    private $conn;
 
-    protected $baseUrl;
+    private $baseUrl;
 
-    public function __construct($pdo = null)
+    public function __construct()
     {
-        global $conn;
-
-        $this->db = $pdo instanceof PDO ? $pdo : (isset($conn) ? $conn : null);
+        $database = new Database();
+        $db = $database->dbConnection();
+        $this->conn = $db;
 
         $this->baseUrl = defined('BASE_URL') ? BASE_URL : $this->guessBaseUrl();
     }
@@ -50,7 +50,7 @@ class USER
 
     public function getUserById($id)
     {
-        $st = $this->db->prepare("SELECT id, username, email, verified FROM users WHERE id = ? LIMIT 1");
+        $st = $this->conn->prepare("SELECT id, username, email, verified FROM users WHERE id = ? LIMIT 1");
         $st->execute([$id]);
         return $st->fetch(PDO::FETCH_ASSOC);
     }
@@ -59,7 +59,7 @@ class USER
 
     public function register($username, $email, $password)
     {
-        $st = $this->db->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
+        $st = $this->conn->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
         $st->execute([$email]);
         if ($st->fetch()) {
             throw new Exception("This email already registered!");
@@ -68,21 +68,42 @@ class USER
         $token = bin2hex(random_bytes(16));
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $in = $this->db->prepare("INSERT INTO users (username, email, password, token, verified) VALUES (?,?,?,?,0)");
+        $in = $this->conn->prepare("INSERT INTO users (username, email, password, token, verified) VALUES (?,?,?,?,0)");
 
         $in->execute([$username, $email, $hash, $token]);
 
         //send verification mail
         $verifyLink = $this->baseUrl . "/auth/verify.php?token=" . urlencode($token) . "&email=" . urlencode($email);
 
-        $this->sendMail($email, "Verify Your Email", "Click the link to verify:\n{$verifyLink}");
+        $message = '
+						<div style="font-family: Arial; font-size: 14px; line-height: 1.6; color: #333;">
+						<h2 style="margin: 0 0 12px;">Verify Your Email</h2>
+						<p>Hi ' . htmlspecialchars('username') . ',</p>
+						<p>Please click the button bellow to verify your account:</p>
+
+						<p style="margin: 16px 0;">
+							<a href="' . htmlspecialchars($verifyLink) . '" target="_blank" style="background: #007bff; color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 6px; display: inline-block;">Verify My Account
+							</a>
+						</p>
+
+						<p>If the button does not work, copy the following link and paste into your browser:</p>
+						<p>
+							<a href="' . htmlspecialchars($verifyLink) . '" target="_blank">' . htmlspecialchars($verifyLink) . '</a>
+						</p>
+
+						<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+						<p style="font-size: 12px; color: #777;">If you did not create this account, you can ignore this email.</p>
+					</div>';
+
+        $this->sendMail($email, "Verify Your Email", $message);
+
 
         return true;
     }
 
     public function login($email, $password)
     {
-        $st = $this->db->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
+        $st = $this->conn->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
 
         $st->execute([$email]);
 
@@ -104,12 +125,13 @@ class USER
         $_SESSION['user_email'] = $u['email'];
         $_SESSION['user_name'] = $u['username'];
 
-        return true;
+        header("Location: " . $this->baseUrl . "/");
+        exit;
     }
 
     public function verify($email, $token)
     {
-        $st = $this->db->prepare("SELECT id, token, verified FROM users WHERE email = ? LIMIT 1");
+        $st = $this->conn->prepare("SELECT id, token, verified FROM users WHERE email = ? LIMIT 1");
         $st->execute([$email]);
         $u = $st->fetch(PDO::FETCH_ASSOC);
 
@@ -118,14 +140,14 @@ class USER
         }
 
         if ((int)$u['verified'] === 1) {
-            return true; // already verified
+            return true; //already verified
         }
 
         if (!hash_equals($u['token'] ?? '', $token ?? '')) {
             throw new Exception("Invalid verification token");
         }
 
-        $up = $this->db->prepare("UPDATE users SET verified = 1, token = NULL WHERE id = ?");
+        $up = $this->conn->prepare("UPDATE users SET verified = 1, token = NULL WHERE id = ?");
         $up->execute([$u['id']]);
 
         return true;
@@ -133,7 +155,7 @@ class USER
 
     public  function requestPasswordReset($email)
     {
-        $st = $this->db->prepare("SELECT id, username FROM users WHERE email = ? LIMIT 1");
+        $st = $this->conn->prepare("SELECT id, username FROM users WHERE email = ? LIMIT 1");
         $st->execute([$email]);
         $u = $st->fetch(PDO::FETCH_ASSOC);
 
@@ -142,7 +164,7 @@ class USER
         $token = bin2hex(random_bytes(16));
         $expire = (new DateTime('+1 hour'))->format('Y-m-d H:i:s');
 
-        $up = $this->db->prepare("UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?");
+        $up = $this->conn->prepare("UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?");
 
         $up->execute([$token, $expire, $u['id']]);
 
@@ -178,7 +200,7 @@ class USER
 
     public function resetPassword($email, $token, $newPassword)
     {
-        $st = $this->db->prepare("SELECT id, reset_token, reset_expires FROM users WHERE email = ? LIMIT 1");
+        $st = $this->conn->prepare("SELECT id, reset_token, reset_expires FROM users WHERE email = ? LIMIT 1");
         $st->execute([$email]);
         $u = $st->fetch(PDO::FETCH_ASSOC);
 
@@ -198,31 +220,31 @@ class USER
         }
 
         $hash = password_hash($newPassword, PASSWORD_DEFAULT);
-        $up = $this->db->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ? ");
+        $up = $this->conn->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ? ");
         $up->execute([$hash, $u['id']]);
         return true;
     }
 
-    public function sendMail($email, $message, $subject)
+    public function sendMail($email, $subject, $message)
     {
         require_once __DIR__ . '/mailer/PHPMailer.php';
         require_once __DIR__ . '/mailer/SMTP.php';
 
         $mail = new PHPMailer\PHPMailer\PHPMailer();
-        //$mail->SMTPDebug = 3;
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'saifmahin500@gmail.com';
-        $mail->Password = 'swpcsovljnoegmvq';
+        $mail->Password = 'swpcsovljnoegmvq'; // App Password
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
         $mail->setFrom('saifmahin500@gmail.com', 'PotherHaat');
         $mail->addAddress($email);
+
         $mail->isHTML(true);
         $mail->Subject = $subject;
-        $mail->Body = $message;
+        $mail->Body    = $message;
         $mail->AltBody = strip_tags($message);
 
         if (!$mail->send()) {
