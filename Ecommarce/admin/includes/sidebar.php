@@ -17,6 +17,10 @@
 		<i class="fas fa-tags"></i> Attributes
 	</a>
 
+	<a href="index.php?page=admin_profile">
+		<i class="fas fa-tags"></i> Change Profile
+	</a>
+
 	<a href="#inventorySubmenu" data-toggle="collapse" class="dropdown-toggle">
 		<i class="fas fa-warehouse"></i> Inventory
 	</a>
