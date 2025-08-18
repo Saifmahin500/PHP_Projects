@@ -9,7 +9,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 	$email = trim($_POST['email'] ?? '');
 	$user->requestPasswordReset($email);
-	$msg = '<div class="alert alert-success">If the email exists, a reset link has been sent.</div>';
+	$msg = '<div class="alert alert-success">If the email exists, a reset link has been sent</div>';
 }
 
 ?>
