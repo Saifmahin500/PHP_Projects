@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </form>
                 <?php else: ?>
                     <div class="alert alert-warning mb-0">
-                        Invalid or missing reset link. Please request a new link from the <a href="<?= $BASE ?>/auth/fpass.php">Forgot Password</a>Page.
+                        Invalid or missing reset link. <br> Please request a new link from the <a href="<?= $BASE ?>/auth/fpass.php">Forgot Password</a>Page.
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
